@@ -134,7 +134,7 @@ export default function ChatPage() {
                   className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="gpt">GPT-4o</option>
-                  <option value="claude">Claude Sonnet 4</option>
+                  <option value="claude">Claude 3.5 Sonnet</option>
                 </select>
               </div>
               <NavAuth />
