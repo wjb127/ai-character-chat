@@ -12,7 +12,7 @@ interface Message {
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, messages } = await request.json()
+    const { message, messages, characterId = 'helper-assistant' } = await request.json()
 
     if (!message) {
       return NextResponse.json(
@@ -21,16 +21,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Import character data
+    const { getCharacterById } = await import('@/lib/characters')
+    const character = getCharacterById(characterId)
+    
+    if (!character) {
+      return NextResponse.json(
+        { error: 'Character not found' },
+        { status: 400 }
+      )
+    }
+
     const conversationHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content: `당신은 친근하고 도움이 되는 AI 어시스턴트입니다. 사용자와 자연스럽고 engaging한 대화를 나누세요. 
-        다음과 같은 특성을 가지고 있습니다:
-        - 친근하고 따뜻한 성격
-        - 창의적이고 유머러스
-        - 도움이 되고 정확한 정보 제공
-        - 한국어로 자연스럽게 대화
-        - 사용자의 감정과 맥락을 이해하려고 노력`
+        content: character.systemPrompt
       }
     ]
 
@@ -49,7 +54,7 @@ export async function POST(request: NextRequest) {
     })
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o',
       messages: conversationHistory,
       max_tokens: 1000,
       temperature: 0.7,

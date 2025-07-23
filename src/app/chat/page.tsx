@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Send, Bot, User } from 'lucide-react'
+import { Send, Bot, User, Users } from 'lucide-react'
 import NavAuth from '@/components/NavAuth'
+import CharacterSelector from '@/components/CharacterSelector'
+import { defaultCharacters, Character } from '@/lib/characters'
 
 interface Message {
   id: string
@@ -12,10 +14,11 @@ interface Message {
 }
 
 export default function ChatPage() {
+  const [selectedCharacter, setSelectedCharacter] = useState<Character>(defaultCharacters[6]) // 기본값: 도움이
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: '안녕하세요! 저는 AI 어시스턴트입니다. 무엇을 도와드릴까요?',
+      content: selectedCharacter.greeting,
       role: 'assistant',
       timestamp: new Date()
     }
@@ -23,6 +26,20 @@ export default function ChatPage() {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedAI, setSelectedAI] = useState<'gpt' | 'claude'>('gpt')
+  const [showCharacterSelector, setShowCharacterSelector] = useState(false)
+
+  const handleCharacterSelect = (character: Character) => {
+    setSelectedCharacter(character)
+    setMessages([
+      {
+        id: '1',
+        content: character.greeting,
+        role: 'assistant',
+        timestamp: new Date()
+      }
+    ])
+    setShowCharacterSelector(false)
+  }
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,7 +65,8 @@ export default function ChatPage() {
         },
         body: JSON.stringify({
           message: input,
-          messages: messages
+          messages: messages,
+          characterId: selectedCharacter.id
         }),
       })
 
@@ -86,11 +104,21 @@ export default function ChatPage() {
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">AI 캐릭터 챗</h1>
-            <p className="text-gray-600">AI와 자유롭게 대화해보세요</p>
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-600">현재 캐릭터:</span>
+              <button
+                onClick={() => setShowCharacterSelector(!showCharacterSelector)}
+                className="flex items-center space-x-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+              >
+                <span className="text-lg">{selectedCharacter.emoji}</span>
+                <span className="font-medium">{selectedCharacter.name}</span>
+                <Users className="w-4 h-4" />
+              </button>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">AI 선택:</span>
+              <span className="text-sm text-gray-500">AI 모델:</span>
               <select
                 value={selectedAI}
                 onChange={(e) => setSelectedAI(e.target.value as 'gpt' | 'claude')}
@@ -105,7 +133,16 @@ export default function ChatPage() {
         </div>
       </header>
 
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
+        {showCharacterSelector && (
+          <div className="absolute top-4 left-4 z-10">
+            <CharacterSelector
+              characters={defaultCharacters}
+              selectedCharacter={selectedCharacter}
+              onCharacterSelect={handleCharacterSelect}
+            />
+          </div>
+        )}
         <div className="max-w-4xl mx-auto h-full flex flex-col">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
