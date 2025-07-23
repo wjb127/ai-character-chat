@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Send, Bot, User, Users } from 'lucide-react'
+import { Send, Bot, User } from 'lucide-react'
 import NavAuth from '@/components/NavAuth'
 import CharacterSelector from '@/components/CharacterSelector'
 import { defaultCharacters, Character } from '@/lib/characters'
@@ -26,8 +26,6 @@ export default function ChatPage() {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedAI, setSelectedAI] = useState<'gpt' | 'claude'>('gpt')
-  const [showCharacterSelector, setShowCharacterSelector] = useState(false)
-
   const handleCharacterSelect = (character: Character) => {
     setSelectedCharacter(character)
     setMessages([
@@ -38,7 +36,6 @@ export default function ChatPage() {
         timestamp: new Date()
       }
     ])
-    setShowCharacterSelector(false)
   }
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -99,51 +96,54 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-white shadow-sm border-b p-4">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">AI 캐릭터 챗</h1>
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-600">현재 캐릭터:</span>
-              <button
-                onClick={() => setShowCharacterSelector(!showCharacterSelector)}
-                className="flex items-center space-x-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
-              >
-                <span className="text-lg">{selectedCharacter.emoji}</span>
-                <span className="font-medium">{selectedCharacter.name}</span>
-                <Users className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">AI 모델:</span>
-              <select
-                value={selectedAI}
-                onChange={(e) => setSelectedAI(e.target.value as 'gpt' | 'claude')}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="gpt">GPT-4o</option>
-                <option value="claude">Claude 3.5 Sonnet</option>
-              </select>
-            </div>
-            <NavAuth />
-          </div>
+    <div className="flex h-screen bg-gray-100">
+      {/* Left Sidebar - Character Selection */}
+      <div className="w-80 bg-white shadow-lg border-r flex-shrink-0">
+        <div className="p-4 border-b">
+          <h2 className="text-lg font-semibold text-gray-800">캐릭터 선택</h2>
         </div>
-      </header>
+        <div className="flex-1 overflow-y-auto">
+          <CharacterSelector
+            characters={defaultCharacters}
+            selectedCharacter={selectedCharacter}
+            onCharacterSelect={handleCharacterSelect}
+          />
+        </div>
+      </div>
 
-      <div className="flex-1 overflow-hidden relative">
-        {showCharacterSelector && (
-          <div className="absolute top-4 left-4 z-10">
-            <CharacterSelector
-              characters={defaultCharacters}
-              selectedCharacter={selectedCharacter}
-              onCharacterSelect={handleCharacterSelect}
-            />
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        <header className="bg-white shadow-sm border-b p-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">AI 캐릭터 챗</h1>
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-600">현재 캐릭터:</span>
+                <div className="flex items-center space-x-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg">
+                  <span className="text-lg">{selectedCharacter.emoji}</span>
+                  <span className="font-medium">{selectedCharacter.name}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500">AI 모델:</span>
+                <select
+                  value={selectedAI}
+                  onChange={(e) => setSelectedAI(e.target.value as 'gpt' | 'claude')}
+                  className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="gpt">GPT-4o</option>
+                  <option value="claude">Claude 3.5 Sonnet</option>
+                </select>
+              </div>
+              <NavAuth />
+            </div>
           </div>
-        )}
-        <div className="max-w-4xl mx-auto h-full flex flex-col">
+        </header>
+
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full flex flex-col">
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
               <div
@@ -223,6 +223,7 @@ export default function ChatPage() {
               </button>
             </div>
           </form>
+          </div>
         </div>
       </div>
     </div>

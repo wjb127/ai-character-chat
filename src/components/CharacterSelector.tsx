@@ -30,10 +30,7 @@ export default function CharacterSelector({
   }, {} as Record<string, Character[]>)
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 max-h-96 overflow-y-auto">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
-        캐릭터 선택
-      </h3>
+    <div className="p-4 h-full overflow-y-auto">{/* Remove bg-white, shadow, rounded styles since it's now integrated */}
       
       <div className="space-y-4">
         {Object.entries(groupedCharacters).map(([category, chars]) => (
