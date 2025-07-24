@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Send, Bot, User } from 'lucide-react'
 import NavAuth from '@/components/NavAuth'
 import CharacterSelector from '@/components/CharacterSelector'

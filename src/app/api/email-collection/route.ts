@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     // Get client info for analytics
     const userAgent = request.headers.get('user-agent')
     const forwarded = request.headers.get('x-forwarded-for')
-    const ipAddress = forwarded ? forwarded.split(',')[0] : request.ip
+    const ipAddress = forwarded ? forwarded.split(',')[0] : null
 
     // Insert email into database
     const { data, error } = await supabase
