@@ -14,9 +14,9 @@ export default function CharacterSelector({
   onCharacterSelect 
 }: CharacterSelectorProps) {
   const categories = {
+    friend: '👫 친구 & 유명인',
     romance: '💕 연인',
     family: '👨‍👩‍👧‍👦 가족',
-    friend: '👫 친구',
     pet: '🐾 반려동물',
     helper: '🤖 도우미'
   }

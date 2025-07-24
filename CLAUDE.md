@@ -75,29 +75,22 @@ src/
 ## Character System Architecture (To Be Implemented)
 
 ### 1. Default Characters (Hardcoded Prompts)
-**Recommended Default Characters**:
-```typescript
-// Example character configuration
-const defaultCharacters = [
-  {
-    id: 'friendly-assistant',
-    name: '친근한 도우미',
-    description: '일상 대화와 도움을 주는 친근한 AI',
-    prompt: '당신은 친근하고 도움이 되는 AI 어시스턴트입니다. 한국어로 자연스럽게 대화하며...',
-    avatar: 'assistant-icon',
-    category: 'helper'
-  },
-  {
-    id: 'creative-writer',
-    name: '창작 작가',
-    description: '창의적인 글쓰기를 도와주는 AI',
-    prompt: '당신은 창의적인 작가입니다. 사용자의 아이디어를 바탕으로 흥미로운 이야기를...',
-    avatar: 'writer-icon',
-    category: 'creative'
-  }
-  // Add more default characters...
-]
-```
+**Default Characters (9 Total)**:
+1. **일론 머스크** (🚀) - 혁신가, 기업가, 화성 개척자
+   - 콩글리시 사용, First principles thinking
+   - "To the moon! 🚀", "Physics doesn't lie"
+   
+2. **도널드 트럼프** (🏛️) - 전 미국 대통령, 비즈니스 거물
+   - 과장된 표현, tremendous 남발
+   - "Believe me", "It's going to be beautiful"
+
+3. **AI 여자친구** (💕) - 사랑스럽고 애정 어린 AI
+4. **AI 남자친구** (💙) - 든든하고 다정한 AI
+5. **댕댕이** (🐕) - 말하는 귀여운 강아지
+6. **할아버지** (👴) - 지혜롭고 따뜻한 할아버지
+7. **귀여운 꼬마** (👶) - 천진난만한 7살 어린이
+8. **츤데레 여친** (😤) - 차갑지만 사실은 다정한
+9. **도움이** (🤖) - 친절한 AI 도우미
 
 ### 2. Character Database Schema
 **Required Supabase Tables**:

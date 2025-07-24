@@ -14,7 +14,7 @@ interface Message {
 }
 
 export default function ChatPage() {
-  const [selectedCharacter, setSelectedCharacter] = useState<Character>(defaultCharacters[6]) // 기본값: 도움이
+  const [selectedCharacter, setSelectedCharacter] = useState<Character>(defaultCharacters[0]) // 기본값: 일론 머스크
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
