@@ -26,6 +26,8 @@ export default function PaymentPopup({ onClose, onEmailSubmitted }: PaymentPopup
     setIsSubmitting(true)
     
     try {
+      console.log('🔵 Submitting email:', email)
+      
       const response = await fetch('/api/email-collection', {
         method: 'POST',
         headers: {
@@ -34,18 +36,29 @@ export default function PaymentPopup({ onClose, onEmailSubmitted }: PaymentPopup
         body: JSON.stringify({ email }),
       })
 
+      const data = await response.json()
+      console.log('📨 Email submission response:', { 
+        status: response.status, 
+        ok: response.ok, 
+        data 
+      })
+
       if (response.ok) {
+        console.log('✅ Email submission successful')
         setSubmitted(true)
         // 이메일 수집 완료 후 설문 팝업을 위한 콜백 실행
         setTimeout(() => {
           onEmailSubmitted()
         }, 2000) // 2초 후 설문 팝업 표시
       } else {
-        alert('이메일 등록에 실패했습니다. 다시 시도해주세요.')
+        console.error('❌ Email submission failed:', data)
+        // 더 구체적인 에러 메시지 표시
+        const errorMessage = data.error || '이메일 등록에 실패했습니다. 다시 시도해주세요.'
+        alert(errorMessage)
       }
     } catch (error) {
-      console.error('Email submission error:', error)
-      alert('이메일 등록에 실패했습니다. 다시 시도해주세요.')
+      console.error('❌ Email submission network error:', error)
+      alert('네트워크 오류가 발생했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.')
     } finally {
       setIsSubmitting(false)
     }
