@@ -2,12 +2,15 @@
 
 import { SessionProvider } from 'next-auth/react'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ChatProvider } from '@/contexts/ChatContext'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <AuthProvider>
-        {children}
+        <ChatProvider>
+          {children}
+        </ChatProvider>
       </AuthProvider>
     </SessionProvider>
   )

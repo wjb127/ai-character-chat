@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Send, Bot, User } from 'lucide-react'
 import NavAuth from '@/components/NavAuth'
 import CharacterSelector from '@/components/CharacterSelector'
+import PaymentPopup from '@/components/PaymentPopup'
+import SurveyPopup from '@/components/SurveyPopup'
 import { defaultCharacters, Character } from '@/lib/characters'
+import { useChat } from '@/contexts/ChatContext'
 
 interface Message {
   id: string
@@ -14,6 +17,15 @@ interface Message {
 }
 
 export default function ChatPage() {
+  const { 
+    messageCount, 
+    incrementMessageCount, 
+    shouldShowPaymentPopup, 
+    hidePaymentPopup,
+    shouldShowSurveyPopup,
+    showSurveyPopup,
+    hideSurveyPopup
+  } = useChat()
   const [selectedCharacter, setSelectedCharacter] = useState<Character>(defaultCharacters[0]) // 기본값: 일론 머스크
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -52,6 +64,9 @@ export default function ChatPage() {
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
+    
+    // 사용자 메시지 카운트 증가
+    incrementMessageCount()
 
     try {
       const apiEndpoint = selectedAI === 'gpt' ? '/api/chat' : '/api/claude'
@@ -117,11 +132,16 @@ export default function ChatPage() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">AI 캐릭터 챗</h1>
-              <div className="flex items-center space-x-2">
-                <span className="text-gray-600">현재 캐릭터:</span>
-                <div className="flex items-center space-x-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg">
-                  <span className="text-lg">{selectedCharacter.emoji}</span>
-                  <span className="font-medium">{selectedCharacter.name}</span>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-600">현재 캐릭터:</span>
+                  <div className="flex items-center space-x-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-lg">
+                    <span className="text-lg">{selectedCharacter.emoji}</span>
+                    <span className="font-medium">{selectedCharacter.name}</span>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500">
+                  대화 횟수: {messageCount}/10 (무료)
                 </div>
               </div>
             </div>
@@ -226,6 +246,19 @@ export default function ChatPage() {
           </div>
         </div>
       </div>
+
+      {/* Payment Popup */}
+      {shouldShowPaymentPopup && (
+        <PaymentPopup 
+          onClose={hidePaymentPopup} 
+          onEmailSubmitted={showSurveyPopup}
+        />
+      )}
+
+      {/* Survey Popup */}
+      {shouldShowSurveyPopup && (
+        <SurveyPopup onClose={hideSurveyPopup} />
+      )}
     </div>
   )
 }
